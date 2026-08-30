@@ -43,11 +43,16 @@ def get_connection_pool():
     Create a cached MySQL connection pool.
     On Streamlit Cloud: uses st.secrets
     On local: uses environment variables or .env
+    Returns None if no valid host is configured (e.g. empty db_host on Cloud).
     """
     # Try Streamlit Cloud secrets first
     try:
+        db_host = st.secrets.get("db_host", "")
+        # If db_host is blank, don't even try — we're on Cloud with no DB
+        if not db_host:
+            return None
         db_config = {
-            "host": st.secrets["db_host"],
+            "host": db_host,
             "port": int(st.secrets.get("db_port", 3306)),
             "user": st.secrets["db_user"],
             "password": st.secrets["db_password"],
@@ -58,8 +63,11 @@ def get_connection_pool():
         }
     except Exception:
         # Fallback to environment variables for local development
+        db_host = os.getenv("DB_HOST", "localhost")
+        if not db_host:
+            return None
         db_config = {
-            "host": os.getenv("DB_HOST", "localhost"),
+            "host": db_host,
             "port": int(os.getenv("DB_PORT", "3306")),
             "user": os.getenv("DB_USER", "root"),
             "password": os.getenv("DB_PASSWORD", "cricket123"),

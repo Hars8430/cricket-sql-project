@@ -224,8 +224,7 @@ with tab1:
             names="short_name",
             values="wins",
             hole=0.45,
-            color="wins",
-            color_continuous_scale="Greens",
+            color_discrete_sequence=px.colors.sequential.Greens,
         )
         fig.update_traces(textposition="outside", textinfo="label+value")
         fig.update_layout(height=320, margin=dict(t=20, b=20, l=20, r=20))
