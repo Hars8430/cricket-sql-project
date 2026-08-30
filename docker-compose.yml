@@ -1,0 +1,19 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: cricket-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: cricket123
+      MYSQL_DATABASE: cricket_db
+      MYSQL_USER: cricket_user
+      MYSQL_PASSWORD: cricket123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d/
+    command: --default-authentication-plugin=mysql_native_password
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
